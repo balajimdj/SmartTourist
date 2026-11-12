@@ -4,6 +4,8 @@ export const ZONES = [
   { id: 'restricted', name: 'Restricted Zone', kind: 'restricted', lat: 37.7449, lng: -122.4194, radius: 550, description: 'Access is discouraged for visitors' },
 ]
 
+const zonePriority = { restricted: 0, warning: 1, safe: 2 }
+
 export const distanceInMeters = (pointA, pointB) => {
   const radians = (value) => (value * Math.PI) / 180
   const earthRadius = 6371000
@@ -17,5 +19,5 @@ export const distanceInMeters = (pointA, pointB) => {
 export const findZone = (point) => {
   if (!point) return null
   const matches = ZONES.filter((zone) => distanceInMeters(point, zone) <= zone.radius)
-  return matches.sort((a, b) => ({ restricted: 0, warning: 1, safe: 2 }[a.kind] - { restricted: 0, warning: 1, safe: 2 }[b.kind])[0] || null
+  return matches.sort((a, b) => zonePriority[a.kind] - zonePriority[b.kind])[0] || null
 }
